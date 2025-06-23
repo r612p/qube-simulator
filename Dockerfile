@@ -1,11 +1,26 @@
-# Use official Java runtime base image
-FROM openjdk:17-jdk-slim
+# Use an official Maven image to build the app
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 
-# Add the packaged jar to the container
-COPY C:\Users\ryanp\Downloads\simulator\simulator\target\simulator-0.0.1-SNAPSHOT.jar.original  
+# Set working directory
+WORKDIR /app
 
-# Run the jar file
-ENTRYPOINT ["java","-jar","/app.jar"]
+# Copy your code into the container
+COPY . .
 
-# Expose port 8080
+# Build the application using Maven
+RUN mvn clean package -DskipTests
+
+# Use a lightweight JDK image to run the app
+FROM eclipse-temurin:17-jdk-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy the built JAR from the previous stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port
 EXPOSE 8080
+
+# Command to run your app
+ENTRYPOINT ["java", "-jar", "app.jar"]
