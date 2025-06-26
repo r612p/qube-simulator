@@ -1,4 +1,4 @@
-package com.example.simulator; // ✅ Replace this with your actual package name
+package com.qube.simulator; // ✅ Replace this with your actual package name
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
