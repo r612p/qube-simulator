@@ -1,6 +1,4 @@
-package com.qube.simulator;
 import java.util.ArrayList;
-
 public class AI{
 
 public class GCD{
@@ -117,32 +115,48 @@ public static void main(String[] args){
         System.out.println(mqSHORIn.executeCircut());
         
 
+
+//circut testing
+System.out.println("begin circut testing");
+System.out.println("");
+System.out.println("");
+
+MultiQubit circuit = new MultiQubit(3);
+
+    // adding gates
+    circuit.addGate("Hadamard", 0, 0);
+    circuit.addGate("X", 1, 0);
+    circuit.addGate("Z", 2, 0); 
+    String output = circuit.executeCircut();
+    System.out.println("Circuit Output: " + output);
+    for (int i = 0; i < circuit.getNumQubits(); i++) {
+        System.out.println("Qubit " + i + " state: " + circuit.getQubitFromMulti(i));
+    }
+}
+
+
+
         
 }
-}
+
 
 class Qubit{
      private complexNumber a;
-    private complexNumber b;
-   
+     private complexNumber b;
+     private boolean collapsed = false;
+     private String measuredValue = null;
+
 
     public Qubit(){  //base constructor, represented by a∣0⟩+b∣1⟩, a=0, b=1
 
-        a = new complexNumber(1, 0);                                                                                                               // by the way I changed it from 00 10 to 10 00 so it outputs 0
-        b = new complexNumber(0, 0);
+        a = new complexNumber(0, 0);                                                                                                               // by the way I changed it from 00 10 to 10 00 so it outputs 0
+        b = new complexNumber(1, 0);
 
     }
         public Qubit(int ar, int ai, int br, int bi){  //constructor, only for specific examples where you want to create your own qubit. This is not possible irl.
 
         a = new complexNumber(ar, ai);
         b = new complexNumber(br, bi);
-
-    }
-
-        public Qubit(complexNumber a, complexNumber b){  //constructor, only for specific examples where you want to create your own qubit. This is not possible irl.
-
-        this.a = a;
-        this.b = b;
 
     }
     
@@ -175,13 +189,28 @@ public complexNumber getB(){
         return b;
 }
 
-public String execute(){ //true is land on 1, false is land on 0
+public String execute(){
         double num = Math.random();
-        if(num < Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2))
+    if (collapsed == true) {
+        return measuredValue;
+    }
+    else{
+         if(num < Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2)){
+                collapsed = true;
                 return "0";
-        else
+         }
+        else{
+                collapsed = true;
                 return "1";
+        }
 }
+}
+
+public void resetCollapse(){
+    collapsed = false;
+    measuredValue = null;
+}
+
 
 public void XGate(){
         complexNumber temp = a;
@@ -260,93 +289,127 @@ public String toString(){
         String iB = "" + getB().getImaginary();
 
 
-        return "(" + realA + " + " + iA + "i)" + "|0>" + " + (" + realB + " + " + iB + "i)" + "|0>";
+        return "(" + realA + " + " + iA + "i)" + "|0>" + " + (" + realB + " + " + iB + "i)" + "|1>";
 }
 }
 
 
 
-class MultiQubit{
+class MultiQubit {
 
-public ArrayList<Qubit> entangled = new ArrayList<>();
-public ArrayList<String> entangledOutputs = new ArrayList<>();
-private int numQubits;
+    public ArrayList<Qubit> entangled = new ArrayList<>();
+    public ArrayList<String> entangledOutputs = new ArrayList<>();
+    private int numQubits;
+    public ArrayList<ArrayList<String>> workspace;
 
-
-public String[][] workspace;
-
-
-public MultiQubit(int num){
+    public MultiQubit(int num) {
         numQubits = num;
-        for(int i = 0; i<num; i++){
-                entangled.add(new Qubit());
+
+        // Initialize qubits
+        for (int i = 0; i < num; i++) {
+            entangled.add(new Qubit());
+        }
+
+        // Generate all binary output strings
+        for (int i = 0; i < (int) Math.pow(2, numQubits); i++) {
+            String binary = Integer.toBinaryString(i);
+            while (binary.length() < numQubits) {
+                binary = "0" + binary;
+            }
+            entangledOutputs.add(binary);
         }
 
 
-        for(int i = 0; i<(int)Math.pow(2, entangled.size()); i++)
-        {
-                entangledOutputs.add(Integer.toBinaryString(i));
+        workspace = new ArrayList<>();
+        for (int i = 0; i < numQubits; i++) {
+            workspace.add(new ArrayList<>());
         }
-                workspace = new String[numQubits][10];//<-- 10 can be changed later, idk if we want it to be dynamic or not
-        
+    }
+
+
+   public String executeMulti() {
+        StringBuilder answer = new StringBuilder();
+        for (Qubit qz: entangled) {
+            answer.append(qz.execute()).append(" ");
+        }
+        return answer.toString().trim();
+    }
 
 
 
+
+
+
+     public String executeCircut() {
+    // finds max layers
+    int maxLayers = 0;
+    for (ArrayList<String> row : workspace) {
+        maxLayers = Math.max(maxLayers, row.size());
+    }
+
+    // outter columns
+    for (int c = 0; c < maxLayers; c++) {
+
+
+        //inner
+        for (int r = 0; r < workspace.size(); r++) {
+            ArrayList<String> row = workspace.get(r);
+
+
+            if (c >= row.size()) continue;
+
+            String gate = row.get(c);
+            if (gate == null) continue;
+
+            if (gate.equals("X")) {
+                getQubitFromMulti(r).XGate();
+            }
+
+            if (gate.equals("Y")) {
+                getQubitFromMulti(r).YGate();
+            }
+
+            if (gate.equals("Z")) {
+                getQubitFromMulti(r).ZGate();
+            }
+
+            if (gate.equals("S")) {
+                getQubitFromMulti(r).SGate();
+            }
+
+            if (gate.equals("T")) {
+                getQubitFromMulti(r).TGate();
+            }
+
+            if (gate.equals("SDagger")) {
+                getQubitFromMulti(r).SDaggerGate();
+            }
+
+            if (gate.equals("TDagger")) {
+                getQubitFromMulti(r).TDaggerGate();
+            }
+
+            if (gate.equals("Hadamard")) {              //gotta be a way to make this shorter lol instead of spamming if statements
+                getQubitFromMulti(r).HGate();
+            }
+        }
+    }
+
+    return executeMulti();
 }
 
-public String executeMulti(){
-        String answer = "";
-        for(int i = 0; i<entangled.size(); i++){
-                answer = answer + entangled.get(i).execute()+" ";
+
+
+public void addGate(String gate, int qube, int layer) {
+        ArrayList<String> row = workspace.get(qube);
+        while (row.size() <= layer) {
+            row.add(null); 
         }
-        return answer;  //return entangledOutputs.get((int)(Math.random() * entangledOutputs.size())); //random for now, will have to make a generator based on each entangled output's chance
-
-}
-
-
-        public String executeCircut(){
-                for(int c = 0; c < workspace[numQubits].length; c++){                           //something wrong here
-                        for(int r = 0; r < workspace.length; r++){
-                                if (workspace[c][r].equals("X")) {
-                                    getQubitFromMulti(c).XGate();
-                                }
-
-                                if (workspace[c][r].equals("Y")) {
-                                    getQubitFromMulti(c).YGate();
-                                }
-
-                                if (workspace[c][r].equals("Z")) {
-                                    getQubitFromMulti(c).ZGate();
-                                }
-
-                                if (workspace[c][r].equals("S")) {
-                                    getQubitFromMulti(c).SGate();
-                                }
-
-                                if (workspace[c][r].equals("T")) {
-                                    getQubitFromMulti(c).TGate();
-                                }
-
-                                if (workspace[c][r].equals("SDagger")) {
-                                    getQubitFromMulti(c).SDaggerGate();
-                                }
-
-                                if (workspace[c][r].equals("TDagger")) {
-                                    getQubitFromMulti(c).TDaggerGate();
-                                }
-
-                                if (workspace[c][r].equals("Hadamard")) {       //theres gotta be a way to make this shorter
-                                    getQubitFromMulti(c).HGate();
-                                }       
-                        }
-                }
-                                        return executeMulti();                  // have not tested, idk if this will work or nah
-        }
+        row.set(layer, gate);
+    }
 
 
-public void addGate(String gate, int qube, int layer){
-              workspace[qube][layer] = (gate);
-}
+
 
 public int getNumQubits(){
         return numQubits;
