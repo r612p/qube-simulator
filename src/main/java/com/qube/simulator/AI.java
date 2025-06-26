@@ -140,14 +140,14 @@ MultiQubit circuit = new MultiQubit(3);
 }
 
 
-class Qubit{
+public static class Qubit{
      private complexNumber a;
      private complexNumber b;
      private boolean collapsed = false;
      private String measuredValue = null;
 
 
-    public Qubit(){  //base constructor, represented by a∣0⟩+b∣1⟩, a=0, b=1
+   public Qubit(){  //base constructor, represented by a∣0⟩+b∣1⟩, a=0, b=1
 
         a = new complexNumber(0, 0);                                                                                                               // by the way I changed it from 00 10 to 10 00 so it outputs 0
         b = new complexNumber(1, 0);
@@ -295,7 +295,7 @@ public String toString(){
 
 
 
-class MultiQubit {
+public static class MultiQubit {
 
     public ArrayList<Qubit> entangled = new ArrayList<>();
     public ArrayList<String> entangledOutputs = new ArrayList<>();
@@ -429,7 +429,7 @@ public Qubit getQubitFromMulti(int selection){
 
 
 //complex number class start------------------------------------------------------------------------------------------------------
- class complexNumber{
+public static class complexNumber{
         public double real;
         public double imaginary;
 
