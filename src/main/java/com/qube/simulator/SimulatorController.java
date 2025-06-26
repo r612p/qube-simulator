@@ -1,67 +1,69 @@
-package com.qube.simulator; // ✅ Replace this with your actual package name
+package com.qube.simulator;
 
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.HashMap;
+import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-
-// ✅ Assuming you have these classes in your project
-import com.example.simulator.model.Qubit;
-import com.example.simulator.model.ComplexNumber;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
+@CrossOrigin
 public class SimulatorController {
 
-    private Map<String, Qubit> qubits = new HashMap<>();
+    // Thread-safe map to store Qubits by id
+    private Map<String, Qubit> qubits = new ConcurrentHashMap<>();
 
+    // Create a new Qubit with two ComplexNumber objects
     @PostMapping("/create-qubit")
-    public String createQubit(@RequestBody Map<String, Object> payload) {
-        String id = (String) payload.get("id");
-        if (qubits.containsKey(id)) {
-            return "Qubit with ID '" + id + "' already exists.";
-        }
-
+    public String createQubit(@RequestBody Map<String, Object> input) {
         try {
-            double aReal = Double.parseDouble(payload.get("aReal").toString());
-            double bReal = Double.parseDouble(payload.get("bReal").toString());
+            String id = (String) input.get("id");
 
-            // Auto-generate imaginary parts
-            double aImag = Math.random();
-            double bImag = Math.random();
+            double aReal = Double.parseDouble(input.get("aReal").toString());
+            double aImag = Double.parseDouble(input.get("aImag").toString());
+            double bReal = Double.parseDouble(input.get("bReal").toString());
+            double bImag = Double.parseDouble(input.get("bImag").toString());
 
-            ComplexNumber alpha = new ComplexNumber(aReal, aImag);
-            ComplexNumber beta = new ComplexNumber(bReal, bImag);
+            complexNumber a = new complexNumber(aReal, aImag);
+            complexNumber b = new complexNumber(bReal, bImag);
 
-            Qubit qubit = new Qubit(alpha, beta);
+            Qubit qubit = new Qubit(a, b);
             qubits.put(id, qubit);
 
             return "Qubit '" + id + "' created successfully.";
         } catch (Exception e) {
-            return "Error parsing qubit parameters.";
+            return "Error creating qubit: " + e.getMessage();
         }
     }
 
-    @PostMapping("/delete-qubit")
-    public String deleteQubit(@RequestBody Map<String, Object> payload) {
-        String id = (String) payload.get("id");
-        if (qubits.remove(id) != null) {
-            return "Qubit '" + id + "' deleted successfully.";
-        } else {
-            return "Qubit not found.";
-        }
-    }
 
-    @PostMapping("/execute")
-    public String executeQubit(@RequestBody Map<String, Object> payload) {
-        String id = (String) payload.get("id");
+   @PostMapping("/execute")
+public String executeQubit(@RequestBody Map<String, String> input) {
+    try {
+        String id = input.get("id");
         Qubit qubit = qubits.get(id);
+
         if (qubit == null) {
-            return "Qubit not found.";
+            return "Qubit with ID '" + id + "' not found.";
         }
 
-        // Placeholder for actual quantum logic
-        return "Executed qubit '" + id + "': " + qubit.toString();
+        String result = qubit.execute(); // returns "0" or "1"
+        return "Execution result of Qubit '" + id + "': " + result;
+    } catch (Exception e) {
+        return "Error executing qubit: " + e.getMessage();
     }
 }
+
+    // Get the string representation of a Qubit by id
+    @GetMapping("/qubit/{id}")
+    public String getQubit(@PathVariable String id) {
+        Qubit qubit = qubits.get(id);
+        if (qubit == null) {
+            return "Qubit '" + id + "' not found.";
+        }
+        return qubit.toString();
+    }
+
+    // Add other endpoints (e.g., execute, getProbabilityA, etc.) as needed
+
+}
+
+
