@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public class AI{
 
-public class GCD{
+ class GCD{
 public static int gcd(int a, int b) {
         while (b != 0) {
             int temp = b;
@@ -140,7 +140,7 @@ MultiQubit circuit = new MultiQubit(3);
 }
 
 
-public static class Qubit{
+ static class Qubit{
      private complexNumber a;
      private complexNumber b;
      private boolean collapsed = false;
@@ -295,7 +295,7 @@ public String toString(){
 
 
 
-public static class MultiQubit {
+ static class MultiQubit {
 
     public ArrayList<Qubit> entangled = new ArrayList<>();
     public ArrayList<String> entangledOutputs = new ArrayList<>();
@@ -429,7 +429,7 @@ public Qubit getQubitFromMulti(int selection){
 
 
 //complex number class start------------------------------------------------------------------------------------------------------
-public static class complexNumber{
+ static class complexNumber{
         public double real;
         public double imaginary;
 
