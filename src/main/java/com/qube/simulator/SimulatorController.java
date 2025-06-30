@@ -1,29 +1,19 @@
 package com.qube.simulator;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
 public class SimulatorController {
 
-    // Thread-safe map to store Qubits by id
     private Map<String, Qubit> qubits = new ConcurrentHashMap<>();
 
-    // Create a new Qubit with two ComplexNumber objects
     @PostMapping("/create-qubit")
     public String createQubit(@RequestBody Map<String, Object> input) {
         try {
             String id = (String) input.get("id");
-
             double aReal = Double.parseDouble(input.get("aReal").toString());
             double aImag = Double.parseDouble(input.get("aImag").toString());
             double bReal = Double.parseDouble(input.get("bReal").toString());
@@ -41,34 +31,34 @@ public class SimulatorController {
         }
     }
 
-@PostMapping("/delete-qubit")
-public String deleteQubit(@RequestBody Map<String, String> input) {
-    String id = input.get("id");
-    if (qubits.remove(id) != null) {
-        return "Qubit '" + id + "' deleted successfully.";
-    } else {
-        return "Qubit '" + id + "' not found.";
-    }
-}
+    @PostMapping("/execute")
+    public String executeQubit(@RequestBody Map<String, Object> input) {
+        try {
+            String id = input.get("id").toString();
+            boolean noise = Boolean.parseBoolean(input.get("noise").toString());
+            Qubit qubit = qubits.get(id);
 
-   @PostMapping("/execute")
-public String executeQubit(@RequestBody Map<String, String> input) {
-    try {
-        String id = input.get("id");
-        Qubit qubit = qubits.get(id);
+            if (qubit == null) {
+                return "Qubit with ID '" + id + "' not found.";
+            }
 
-        if (qubit == null) {
-            return "Qubit with ID '" + id + "' not found.";
+            String result = qubit.execute(noise);
+            return "Execution result of Qubit '" + id + "': " + result;
+        } catch (Exception e) {
+            return "Error executing qubit: " + e.getMessage();
         }
-
-        String result = qubit.execute(); // returns "0" or "1"
-        return "Execution result of Qubit '" + id + "': " + result;
-    } catch (Exception e) {
-        return "Error executing qubit: " + e.getMessage();
     }
-}
 
-    // Get the string representation of a Qubit by id
+    @PostMapping("/delete-qubit")
+    public String deleteQubit(@RequestBody Map<String, String> input) {
+        String id = input.get("id");
+        if (qubits.remove(id) != null) {
+            return "Qubit '" + id + "' deleted successfully.";
+        } else {
+            return "Qubit '" + id + "' not found.";
+        }
+    }
+
     @GetMapping("/qubit/{id}")
     public String getQubit(@PathVariable String id) {
         Qubit qubit = qubits.get(id);
@@ -77,47 +67,56 @@ public String executeQubit(@RequestBody Map<String, String> input) {
         }
         return qubit.toString();
     }
+}
 
-    // Add other endpoints (e.g., execute, getProbabilityA, etc.) as needed
+class Qubit {
+    private complexNumber a;
+    private complexNumber b;
 
+    public Qubit(complexNumber a, complexNumber b) {
+        this.a = a;
+        this.b = b;
+    }
 
-
-@PostMapping("/execute-circuit")
-public String executeCircuit(@RequestBody Map<String, Object> input) {
-    try {
-        // Parse number of qubits
-        List<String> qubitNames = (List<String>) input.get("qubits");
-        List<List<String>> gates = (List<List<String>>) input.get("gates");
-
-        int numQubits = qubitNames.size();
-        int numLayers = gates.get(0).size();
-
-        // Initialize MultiQubit
-        MultiQubit circuit = new MultiQubit(numQubits);
-
-        // Resize workspace dynamically to match incoming data
-        circuit.workspace = new String[numQubits][numLayers];
-
-        // Apply gates from workspace
-        for (int q = 0; q < numQubits; q++) {
-            for (int l = 0; l < numLayers; l++) {
-                String gate = gates.get(q).get(l);
-                if (gate != null && !gate.isEmpty()) {
-                    circuit.addGate(gate, q, l);
-                }
-            }
+    public String execute(boolean noise) {
+        if (noise) {
+            applyBitFlipNoise(0.05);
         }
+        return measure();
+    }
 
-        // Execute circuit
-        return circuit.executeCircut();  // e.g., "0 1 0 1"
-    } catch (Exception e) {
-        e.printStackTrace();
-        return "Error executing circuit: " + e.getMessage();
+    private void applyBitFlipNoise(double probability) {
+        if (Math.random() < probability) {
+            complexNumber temp = a;
+            a = b;
+            b = temp;
+        }
+    }
+
+    private String measure() {
+        double prob0 = a.absSquared();
+        double r = Math.random();
+        return r < prob0 ? "0" : "1";
+    }
+
+    public String toString() {
+        return "|ψ⟩ = " + a + "|0⟩ + " + b + "|1⟩";
     }
 }
 
+class complexNumber {
+    private double real, imag;
 
+    public complexNumber(double r, double i) {
+        this.real = r;
+        this.imag = i;
+    }
 
+    public double absSquared() {
+        return real * real + imag * imag;
+    }
+
+    public String toString() {
+        return real + (imag >= 0 ? "+" : "") + imag + "i";
+    }
 }
-
-
