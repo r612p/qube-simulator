@@ -1,7 +1,4 @@
  package com.qube.simulator;
-
-
-import java.util.ArrayList;
 public class AI{
 
 
@@ -122,12 +119,3 @@ MultiQubit circuit = new MultiQubit(3);
 
         
 }
-
-
-
-
-
-
-
-
-//complex number class start------------------------------------------------------------------------------------------------------
