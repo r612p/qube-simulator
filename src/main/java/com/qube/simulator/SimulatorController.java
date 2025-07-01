@@ -49,6 +49,19 @@ public class SimulatorController {
         }
     }
 
+
+   @PostMapping("/uncollapse-qubit")
+   public String uncollapseQubit(@RequestBody Map<String, String> input) {
+      String id = input.get("id");
+      Qubit qubit = qubits.get(id);
+    if (qubit != null) {
+        qubit.resetCollapse();
+        return "Qubit '" + id + "' uncollapsed.";
+    } else {
+        return "Qubit '" + id + "' not found.";
+    }
+}
+
     @PostMapping("/execute")
     public String executeQubit(@RequestBody Map<String, String> input) {
         try {
