@@ -88,6 +88,9 @@ public void resetCollapse(){
     measuredValue = null;
 }
 
+public boolean isCollapsed() {
+    return collapsed;
+}
 
 
 
