@@ -63,21 +63,23 @@ public class SimulatorController {
 }
 
     @PostMapping("/execute")
-    public String executeQubit(@RequestBody Map<String, String> input) {
-        try {
-            String id = input.get("id");
-            Qubit qubit = qubits.get(id);
+    @PostMapping("/execute")
+public String executeQubit(@RequestBody Map<String, String> input) {
+    try {
+        String id = input.get("id");
+        Qubit qubit = qubits.get(id);
 
-            if (qubit == null) {
-                return "Qubit with ID '" + id + "' not found.";
-            }
-
-            String result = qubit.executeSingle();
-            return "Execution result of Qubit '" + id + "': " + result;
-        } catch (Exception e) {
-            return "Error executing qubit: " + e.getMessage();
+        if (qubit == null) {
+            return "Qubit with ID '" + id + "' not found.";
         }
+
+        String result = qubit.executeSingle();
+        return "Execution result of Qubit '" + id + "': " + result + " (collapsed = " + qubit.isCollapsed() + ")";
+    } catch (Exception e) {
+        return "Error executing qubit: " + e.getMessage();
     }
+}
+
 
     @GetMapping("/qubit/{id}")
     public String getQubit(@PathVariable String id) {
