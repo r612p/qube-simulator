@@ -62,7 +62,7 @@ public class SimulatorController {
     }
 }
 
-    @PostMapping("/execute")
+    
     @PostMapping("/execute")
 public String executeQubit(@RequestBody Map<String, String> input) {
     try {
