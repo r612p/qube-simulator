@@ -67,18 +67,18 @@ public complexNumber getB(){
 
 public String executeSingle(){
         double num = Math.random();
-    if (collapsed == true) {
-        return measuredValue;
+   if (collapsed) {
+    return measuredValue;
+} else {
+    double probA = Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2);
+    if (num < probA) {
+        collapsed = true;
+        measuredValue = "0";
+    } else {
+        collapsed = true;
+        measuredValue = "1";
     }
-    else{
-         if(num < Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2)){
-                collapsed = true;
-                return "0";
-         }
-        else{
-                collapsed = true;
-                return "1";
-        }
+    return measuredValue;
 }
 }
 
