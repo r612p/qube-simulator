@@ -29,21 +29,7 @@ class Qubit{
 
     }
    
-    double[][] zeroREP = {
-    {1},                        //how much of it is zero, ALSO THE BASE STATE
-    {0}};                       //how much of it is one
-
-
-    double[][] oneREP  = {
-    {0},
-    {1}};
-       
-
-
-    complexNumber[][] abt = {
-    {a},
-    {b}};
-
+  
 
 public double getProbabilityA(){
         return Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2);
