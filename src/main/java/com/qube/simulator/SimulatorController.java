@@ -62,8 +62,8 @@ public class SimulatorController {
     }
 }
 
-    
-    @PostMapping("/execute")
+
+ @PostMapping("/execute")
 public String executeQubit(@RequestBody Map<String, String> input) {
     try {
         String id = input.get("id");
@@ -71,6 +71,11 @@ public String executeQubit(@RequestBody Map<String, String> input) {
 
         if (qubit == null) {
             return "Qubit with ID '" + id + "' not found.";
+        }
+
+        // Check if already collapsed
+        if (qubit.isCollapsed()) {
+            return "Error: Qubit '" + id + "' has already collapsed.";
         }
 
         String result = qubit.executeSingle();
@@ -82,14 +87,21 @@ public String executeQubit(@RequestBody Map<String, String> input) {
 }
 
 
-    @GetMapping("/qubit/{id}")
-    public String getQubit(@PathVariable String id) {
-        Qubit qubit = qubits.get(id);
-        if (qubit == null) {
-            return "Qubit '" + id + "' not found.";
-        }
-        return qubit.toString();
+@GetMapping("/qubit/{id}")
+public Map<String, Object> getQubit(@PathVariable String id) {
+    Qubit qubit = qubits.get(id);
+    Map<String, Object> response = new HashMap<>();
+    if (qubit == null) {
+        response.put("error", "Qubit '" + id + "' not found.");
+        return response;
     }
+
+    response.put("state", qubit.toString());
+    response.put("collapsed", qubit.isCollapsed());
+    response.put("measuredValue", qubit.isCollapsed() ? qubit.executeSingle() : null);
+    return response;
+}
+
 
     @PostMapping("/execute-circuit")
     public String executeCircuit(@RequestBody Map<String, Object> input) {
