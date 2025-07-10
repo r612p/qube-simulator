@@ -117,12 +117,11 @@ public void HGate(){
 }
 
 
-public void SGate(){
-        complexNumber newB = new complexNumber(b.getImaginary()*-1,b.getReal());
-       
-        b = newB;
+public void SGate() {
+    complexNumber temp = new complexNumber(0, 1); // i
+    b.complexMultiply(temp);
 
-
+ 
 }
 
 
@@ -147,12 +146,11 @@ public void TGate(){
 
 
 }
-public void SDaggerGate(){
-       complexNumber newB = new complexNumber(b.getImaginary()*-1,b.getReal());
-       
-        b = newB;
+public void SDaggerGate() {
+    complexNumber temp = new complexNumber(0, -1); // -i
+    b.complexMultiply(temp);
 
-
+ 
 }
 
 
