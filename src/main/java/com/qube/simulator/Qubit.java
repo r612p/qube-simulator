@@ -85,13 +85,15 @@ public boolean isCollapsed() {
 
 
 public void XGate(){
+
         complexNumber temp = a;
         a = b;
         b = temp;
 }
 
 
-public void YGate(){                                                                            //there may be an issue since b real yields -0.0 when it should be 0.0
+public void YGate(){      
+                                                                          //there may be an issue since b real yields -0.0 when it should be 0.0
         complexNumber newA = new complexNumber(b.getImaginary(), -b.getReal());
 
 
