@@ -47,6 +47,14 @@ class MultiQubit {
 
 
      public String executeCircut() {
+
+for (Qubit qz : entangled) {
+    if (qz.isCollapsed()) {
+        throw new IllegalStateException("Error: Qubit was already collapsed");
+    }
+}
+
+
     // finds max layers
     int maxLayers = 0;
     for (ArrayList<String> row : workspace) {
@@ -60,6 +68,12 @@ class MultiQubit {
         //inner
         for (int r = 0; r < workspace.size(); r++) {
             ArrayList<String> row = workspace.get(r);
+
+            
+            
+      
+
+
 
 
             if (c >= row.size()) continue;
