@@ -74,7 +74,8 @@ public String executeQubit(@RequestBody Map<String, String> input) {
         }
 
         String result = qubit.executeSingle();
-        return "Execution result of Qubit '" + id + "': " + result + " (collapsed = " + qubit.isCollapsed() + ")";
+        return result;
+
     } catch (Exception e) {
         return "Error executing qubit: " + e.getMessage();
     }
