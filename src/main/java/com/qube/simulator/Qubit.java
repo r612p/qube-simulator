@@ -51,12 +51,15 @@ public complexNumber getB(){
 }
 
 
-public String executeSingle(){
-        double num = Math.random();
-   if (collapsed) {
-    return measuredValue;
-} else {
+
+public String executeSingle() {
+    if (collapsed) {
+        throw new IllegalStateException("Qubit has already collapsed.");
+    }
+
+    double num = Math.random();
     double probA = Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2);
+
     if (num < probA) {
         collapsed = true;
         measuredValue = "0";
@@ -64,11 +67,12 @@ public String executeSingle(){
         collapsed = true;
         measuredValue = "1";
     }
+
     return measuredValue;
 }
-}
 
 
+ 
 public void resetCollapse(){
     collapsed = false;
     measuredValue = null;
