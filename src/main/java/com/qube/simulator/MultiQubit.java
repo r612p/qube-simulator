@@ -40,7 +40,7 @@ class MultiQubit {
         Qubit qz = entangled.get(i);
         
         if (qz.isCollapsed()) {
-            throw new IllegalStateException("Error: Qubit " + i + " is already collapsed.");
+            return "Error: Qubit " + i + " is already collapsed.";
         }
 
         answer.append(qz.executeSingle()).append(" ");
@@ -57,6 +57,12 @@ class MultiQubit {
 
      public String executeCircut() {
 
+for (Qubit qz : entangled) {
+    if (qz.isCollapsed()) {
+        throw new IllegalStateException("Error: Qubit was already collapsed");
+    }
+}
+
 
     // finds max layers
     int maxLayers = 0;
@@ -71,6 +77,13 @@ class MultiQubit {
         //inner
         for (int r = 0; r < workspace.size(); r++) {
             ArrayList<String> row = workspace.get(r);
+
+            
+            
+      
+
+
+
 
             if (c >= row.size()) continue;
 
