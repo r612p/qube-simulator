@@ -33,13 +33,22 @@ class MultiQubit {
     }
 
 
-   public String executeMulti() {
-        StringBuilder answer = new StringBuilder();
-        for (Qubit qz: entangled) {
-            answer.append(qz.executeSingle()).append(" ");
+  public String executeMulti() {
+    StringBuilder answer = new StringBuilder();
+
+    for (int i = 0; i < entangled.size(); i++) {
+        Qubit qz = entangled.get(i);
+        
+        if (qz.isCollapsed()) {
+            throw new IllegalStateException("Error: Qubit " + i + " is already collapsed.");
         }
-        return answer.toString().trim();
+
+        answer.append(qz.executeSingle()).append(" ");
     }
+
+    return answer.toString().trim();
+}
+
 
 
 
@@ -47,12 +56,6 @@ class MultiQubit {
 
 
      public String executeCircut() {
-
-for (Qubit qz : entangled) {
-    if (qz.isCollapsed()) {
-        throw new IllegalStateException("Error: Qubit was already collapsed");
-    }
-}
 
 
     // finds max layers
@@ -68,13 +71,6 @@ for (Qubit qz : entangled) {
         //inner
         for (int r = 0; r < workspace.size(); r++) {
             ArrayList<String> row = workspace.get(r);
-
-            
-            
-      
-
-
-
 
             if (c >= row.size()) continue;
 
