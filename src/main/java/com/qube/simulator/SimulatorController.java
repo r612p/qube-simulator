@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
  
 @RestController
-@CrossOrigin(origins = "https://r612p.github.io")
+
 public class SimulatorController {
 
     private Map<String, Qubit> qubits = new ConcurrentHashMap<>();
@@ -138,6 +138,7 @@ public String executeCircuit(@RequestBody Map<String, Object> input) {
     }
 }
  @PostMapping("/uncollapse-all")
+ @CrossOrigin(origins = "https://r612p.github.io")
 public String uncollapseAllQubits() {
     for (Qubit q : qubits.values()) {
         q.uncollapse(); // This must be a method you define
