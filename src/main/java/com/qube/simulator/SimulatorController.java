@@ -105,38 +105,38 @@ public Map<String, Object> getQubit(@PathVariable String id) {
 
 
     @PostMapping("/execute-circuit")
-    public String executeCircuit(@RequestBody Map<String, Object> input) {
-     for (String id : qubitNames) {
-       Qubit q = qubits.get(id);
-       if (q != null) {
-         q.uncollapse();
-       }
-      }
+public String executeCircuit(@RequestBody Map<String, Object> input) {
+    try {
+        List<String> qubitNames = (List<String>) input.get("qubits");
+        List<List<String>> gates = (List<List<String>>) input.get("gates");
 
-        try {
-            List<String> qubitNames = (List<String>) input.get("qubits");
-            List<List<String>> gates = (List<List<String>>) input.get("gates");
+        // Uncollapse qubits before execution
+        for (String id : qubitNames) {
+            Qubit q = qubits.get(id);
+            if (q != null) {
+                q.uncollapse();
+            }
+        }
 
-            int numQubits = qubitNames.size();
+        int numQubits = qubitNames.size();
+        MultiQubit circuit = new MultiQubit(numQubits);
 
-            MultiQubit circuit = new MultiQubit(numQubits);
-
-            // Apply gates to workspace properly
-            for (int q = 0; q < numQubits; q++) {
-                for (int l = 0; l < gates.get(q).size(); l++) {
-                    String gate = gates.get(q).get(l);
-                    if (gate != null && !gate.isEmpty()) {
-                        circuit.addGate(gate, q, l);
-                    }
+        // Apply gates
+        for (int q = 0; q < numQubits; q++) {
+            for (int l = 0; l < gates.get(q).size(); l++) {
+                String gate = gates.get(q).get(l);
+                if (gate != null && !gate.isEmpty()) {
+                    circuit.addGate(gate, q, l);
                 }
             }
-
-            return circuit.executeCircut();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error executing circuit: " + e.getMessage();
         }
+
+        return circuit.executeCircut();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return "Error executing circuit: " + e.getMessage();
     }
+}
  @PostMapping("/uncollapse-all")
 public String uncollapseAllQubits() {
     for (Qubit q : qubits.values()) {
