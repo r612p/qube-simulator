@@ -106,6 +106,13 @@ public Map<String, Object> getQubit(@PathVariable String id) {
 
     @PostMapping("/execute-circuit")
     public String executeCircuit(@RequestBody Map<String, Object> input) {
+     for (String id : qubitNames) {
+       Qubit q = qubits.get(id);
+       if (q != null) {
+         q.uncollapse();
+       }
+      }
+
         try {
             List<String> qubitNames = (List<String>) input.get("qubits");
             List<List<String>> gates = (List<List<String>>) input.get("gates");
