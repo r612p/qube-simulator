@@ -196,7 +196,10 @@ void setA(complexNumber newA) {
 void setB(complexNumber newB) {
     b = new complexNumber(newB.getReal(), newB.getImaginary());
 }
-
+public void uncollapse() {
+    this.collapsed = false;
+    this.measuredValue = null; // or 0, depending on your design
+}
 
 
 
