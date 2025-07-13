@@ -131,6 +131,13 @@ public Map<String, Object> getQubit(@PathVariable String id) {
             return "Error executing circuit: " + e.getMessage();
         }
     }
+ @PostMapping("/uncollapse-all")
+public String uncollapseAllQubits() {
+    for (Qubit q : qubits.values()) {
+        q.uncollapse(); // This must be a method you define
+    }
+    return "All qubits uncollapsed.";
+}
 }
 
 // Also fix your Qubit class to have a constructor that takes four doubles (aReal, aImag, bReal, bImag):
