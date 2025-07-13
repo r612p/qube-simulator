@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
  
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "https://r612p.github.io")
 public class SimulatorController {
 
     private Map<String, Qubit> qubits = new ConcurrentHashMap<>();
