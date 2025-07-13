@@ -1,4 +1,3 @@
-// Fixed version of SimulatorController.java
 package com.qube.simulator;
 
 
