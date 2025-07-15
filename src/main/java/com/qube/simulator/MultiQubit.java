@@ -10,11 +10,8 @@ class MultiQubit {
     public ArrayList<ArrayList<String>> workspace;
 
     public MultiQubit(int num) {
-        numQubits = num;
-
-        for (int i = 0; i < num; i++) {
-            entangled.add(new Qubit());
-        }
+        numQubits = userQubits.size();
+        entangled.addAll(userQubits);
 
         for (int i = 0; i < (int) Math.pow(2, numQubits); i++) {
             String binary = Integer.toBinaryString(i);
