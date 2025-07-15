@@ -127,7 +127,16 @@ for (String id : qubitNames) {
         return "Qubit '" + id + "' not found.";
     }
 }
-MultiQubit circuit = new MultiQubit(selectedQubits);
+List<Qubit> userQubits = new ArrayList<>();
+for (String id : qubitNames) {
+    Qubit q = qubits.get(id);
+    if (q == null) {
+        return "Error: Qubit with ID '" + id + "' not found.";
+    }
+    userQubits.add(q);
+}
+
+MultiQubit circuit = new MultiQubit(userQubits);
 
 
         // Apply gates
