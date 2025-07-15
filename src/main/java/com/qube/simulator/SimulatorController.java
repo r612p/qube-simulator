@@ -118,8 +118,17 @@ public String executeCircuit(@RequestBody Map<String, Object> input) {
             }
         }
 
-        int numQubits = qubitNames.size();
-        MultiQubit circuit = new MultiQubit(numQubits);
+        List<Qubit> selectedQubits = new ArrayList<>();
+for (String id : qubitNames) {
+    Qubit q = qubits.get(id);
+    if (q != null) {
+        selectedQubits.add(q);
+    } else {
+        return "Qubit '" + id + "' not found.";
+    }
+}
+MultiQubit circuit = new MultiQubit(selectedQubits);
+
 
         // Apply gates
         for (int q = 0; q < numQubits; q++) {
