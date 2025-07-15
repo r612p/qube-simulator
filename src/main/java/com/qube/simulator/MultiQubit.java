@@ -216,30 +216,22 @@ class MultiQubit {
         rowControl.set(layer, gate + "Control");
     }
 
-    public void CXGate(int targetPos, int controlPos, int layer) {
-        if (!getQubitFromMulti(controlPos).isCollapsed() &&
-            getQubitFromMulti(controlPos).executeSingle().equals("1")) {
-            getQubitFromMulti(targetPos).XGate();
-        }
+    public void CXGate(int targetPos, int controlPos) {
+        Qubit control = getQubitFromMulti(controlPos);
+        Qubit target = getQubitFromMulti(targetPos);
+        if (control.getProbabilityB() > 0.5) target.XGate();
     }
 
-    public void ToffoliGate(Qubit target, Qubit control, Qubit control2) {
-        if (!control.isCollapsed() && !control2.isCollapsed() &&
-            control.executeSingle().equals("1") && control2.executeSingle().equals("1")) {
-            target.XGate();
-        }
+    public void ToffoliGate(Qubit target, Qubit control1, Qubit control2) {
+        if (control1.getProbabilityB() > 0.5 && control2.getProbabilityB() > 0.5) target.XGate();
     }
 
     public void CZGate(Qubit target, Qubit control) {
-        if (!control.isCollapsed() && control.executeSingle().equals("1")) {
-            target.ZGate();
-        }
+        if (control.getProbabilityB() > 0.5) target.ZGate();
     }
 
     public void CYGate(Qubit target, Qubit control) {
-        if (!control.isCollapsed() && control.executeSingle().equals("1")) {
-            target.YGate();
-        }
+        if (control.getProbabilityB() > 0.5) target.YGate();
     }
 
     public void SWAPGate(Qubit qube1, Qubit qube2) {
