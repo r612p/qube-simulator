@@ -9,23 +9,24 @@ class MultiQubit {
     private int numQubits;
     public ArrayList<ArrayList<String>> workspace;
 
-    public MultiQubit(int num) {
-        numQubits = userQubits.size();
-        entangled.addAll(userQubits);
+    public MultiQubit(List<Qubit> userQubits) {
+    this.numQubits = userQubits.size();
+    this.entangled = new ArrayList<>(userQubits);
 
-        for (int i = 0; i < (int) Math.pow(2, numQubits); i++) {
-            String binary = Integer.toBinaryString(i);
-            while (binary.length() < numQubits) {
-                binary = "0" + binary;
-            }
-            entangledOutputs.add(binary);
+    for (int i = 0; i < (int) Math.pow(2, numQubits); i++) {
+        String binary = Integer.toBinaryString(i);
+        while (binary.length() < numQubits) {
+            binary = "0" + binary;
         }
-
-        workspace = new ArrayList<>();
-        for (int i = 0; i < numQubits; i++) {
-            workspace.add(new ArrayList<>());
-        }
+        entangledOutputs.add(binary);
     }
+
+    workspace = new ArrayList<>();
+    for (int i = 0; i < numQubits; i++) {
+        workspace.add(new ArrayList<>());
+    }
+}
+
 
     public String executeMulti() {
         StringBuilder answer = new StringBuilder();
