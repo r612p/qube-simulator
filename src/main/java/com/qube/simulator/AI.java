@@ -101,8 +101,13 @@ public static void main(String[] args){
 System.out.println("begin circut testing");
 System.out.println("");
 System.out.println("");
-
-MultiQubit circuit = new MultiQubit(3);
+ 
+Qubit q1 =new Qubit(1,0,0,0);
+        Qubit q2 = new Qubit(1,0,0,0);
+        ArrayList<Qubit> qubits = new ArrayList<>();
+        qubits.add(q1);
+        qubits.add(q2);
+MultiQubit circuit = new MultiQubit(qubits);
 
     // adding gates
     circuit.addGate("Hadamard", 0, 0);
