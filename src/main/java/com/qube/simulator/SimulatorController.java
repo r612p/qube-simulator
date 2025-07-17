@@ -142,7 +142,7 @@ MultiQubit circuit = new MultiQubit(userQubits);
 
 
         // Apply gates
-        for (int q = 0; q < numQubits; q++) {
+        for (int q = 0; q < userQubits.size(); q++) {
             for (int l = 0; l < gates.get(q).size(); l++) {
                 String gate = gates.get(q).get(l);
                 if (gate != null && !gate.isEmpty()) {
