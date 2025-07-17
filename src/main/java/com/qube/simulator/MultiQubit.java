@@ -113,7 +113,7 @@ class MultiQubit {
                         }
                     }
                     if (controlQubitI != -1) {
-                        CXGate(r, controlQubitI, c);
+                        CXGate(r, controlQubitI);
                     }
                 }
 
