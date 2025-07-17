@@ -30,9 +30,9 @@ public static void main(String[] args){
         Qubit qu7 = new Qubit();
         Qubit qu8 = new Qubit();
 
-        MultiQubit mq1 = new MultiQubit(10);    //max is 25 on my pc
+        //MultiQubit mq1 = new MultiQubit(10);    //max is 25 on my pc
 
-        System.out.println(mq1.executeMulti());
+        //System.out.println(mq1.executeMulti());
         
         
 
@@ -82,15 +82,15 @@ public static void main(String[] args){
         //shors algo
         //FACTORING 15
 
-        MultiQubit mqSHORIn = new MultiQubit(8);
-        MultiQubit mqSHOROut = new MultiQubit(8);
+        //MultiQubit mqSHORIn = new MultiQubit(8);
+        //MultiQubit mqSHOROut = new MultiQubit(8);
 
        
-         for(int i = 0; i < 8; i++){
-                mqSHORIn.addGate("Hadamard", i, 0);
-        }
+         //for(int i = 0; i < 8; i++){
+         //       mqSHORIn.addGate("Hadamard", i, 0);
+        //}
 
-        System.out.println(mqSHORIn.executeCircut());
+        //System.out.println(mqSHORIn.executeCircut());
         
 
 
