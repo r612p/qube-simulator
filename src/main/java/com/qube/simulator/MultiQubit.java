@@ -32,7 +32,7 @@ class MultiQubit {
     public String executeMulti() {
         StringBuilder answer = new StringBuilder();
 
-        for (int i = 1; i < entangled.size(); i++) {
+        for (int i = 0; i < entangled.size(); i++) {
             Qubit qz = entangled.get(i);
 
             if (qz.isCollapsed()) {
