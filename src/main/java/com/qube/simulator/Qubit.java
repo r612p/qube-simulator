@@ -56,22 +56,31 @@ public complexNumber getB(){
 
 public String executeSingle() {
     if (collapsed) {
-        throw new IllegalStateException("Qubit has already collapsed.");
+        return measuredValue; // Already measured, return stored value
     }
 
+    double normSquared = Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2)
+                       + Math.pow(b.getReal(), 2) + Math.pow(b.getImaginary(), 2);
+    double probA = (Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2)) / normSquared;
+
     double num = Math.random();
-    double probA = Math.pow(a.getReal(), 2) + Math.pow(a.getImaginary(), 2);
 
     if (num < probA) {
-        collapsed = true;
+        // Collapse to |0⟩
+        a = new complexNumber(1, 0);
+        b = new complexNumber(0, 0);
         measuredValue = "0";
     } else {
-        collapsed = true;
+        // Collapse to |1⟩
+        a = new complexNumber(0, 0);
+        b = new complexNumber(1, 0);
         measuredValue = "1";
     }
 
+    collapsed = true;
     return measuredValue;
 }
+
 
 
  
