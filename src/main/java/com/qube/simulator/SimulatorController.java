@@ -165,6 +165,27 @@ public String uncollapseAllQubits() {
     }
     return "All qubits uncollapsed.";
 }
+ @PostMapping("/simulate-shor")
+public String runShor(@RequestBody Map<String, Object> input) {
+    try {
+        int N = (int) input.get("N");
+        return ShorAlgorithm.simulate(N);
+    } catch (Exception e) {
+        return "Error in Shor simulation: " + e.getMessage();
+    }
+}
+
+@PostMapping("/simulate-grover")
+public String runGrover(@RequestBody Map<String, Object> input) {
+    try {
+        int N = (int) input.get("N");
+        int target = (int) input.get("target");
+        return GroverAlgorithm.simulate(N, target);
+    } catch (Exception e) {
+        return "Error in Grover simulation: " + e.getMessage();
+    }
+}
+
 }
 
 // Also fix your Qubit class to have a constructor that takes four doubles (aReal, aImag, bReal, bImag):
