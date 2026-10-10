@@ -1,26 +1,25 @@
-# Use an official Maven image to build the app
+# official mavrn image to build app
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 
-# Set working directory
+# working directory set
 WORKDIR /app
 
-# Copy your code into the container
+# copy code to container
 COPY . .
 
-# Build the application using Maven
+# build w maven
 RUN mvn clean package -DskipTests
 
-# Use a lightweight JDK image to run the app
+# jdk to run app
 FROM eclipse-temurin:17-jdk-alpine
 
-# Set working directory
+# another directory
 WORKDIR /app
 
-# Copy the built JAR from the previous stage
+# Copying the built JAR from the previous stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port
 EXPOSE 8080
 
-# Command to run your app
+# Command to run program
 ENTRYPOINT ["java", "-jar", "app.jar"]
